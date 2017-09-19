@@ -3,13 +3,13 @@ const extendClasses = require('./extendClasses')
 const buildConfig = require('./buildConfig')
 
 
-module.exports = function* apiPlugin(lifecycle) {
+module.exports = function* apiFluentPlugin(lifecycle) {
   yield hook('init', function* (schema, api) {
     if (api) {
       // eslint-disable-next-line
       console.warn(
-        'The default API plugin is overriding another plugin\'s modifications. ' +
-        'Either change the order of the plugins, or disable the default one'
+        'The fluent API plugin is overriding another plugin\'s modifications. ' +
+        'Either change the order of the plugins, or disable the fluent API'
       )
     }
 
