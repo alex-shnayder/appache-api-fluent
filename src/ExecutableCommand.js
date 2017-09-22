@@ -49,8 +49,6 @@ class ExecutableCommand extends Command {
 
       return yield next(config, _command, context, ...args)
     })
-
-    return this
   }
 
   getFullName() {
@@ -59,11 +57,19 @@ class ExecutableCommand extends Command {
   }
 
   handle(command, handler) {
-    return this._hookHandler('handle', command, handler)
+    this._hookHandler('handle', command, handler)
+    return this
   }
 
   tap(command, handler) {
-    return this._hookHandler('tap', command, handler)
+    this._hookHandler('tap', command, handler)
+    return this
+  }
+
+  tapAndHandle(command, handler) {
+    this._hookHandler('tap', command, handler)
+    this._hookHandler('handle', command, handler)
+    return this
   }
 
   execute(command, options) {
