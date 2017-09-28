@@ -15,7 +15,7 @@ class ExecutableCommand extends Command {
         throw new Error('A command name must be a string')
       }
 
-      if (!/^[a-z0-9 _-]+$/.test(command)) {
+      if (!/^[a-z0-9 *_-]+$/.test(command)) {
         throw new Error(
           'A command name can only contain letters, numbers, underscores, hyphens and spaces'
         )
@@ -38,16 +38,16 @@ class ExecutableCommand extends Command {
     }
 
     this._getLifecycle().hook(event, function* (
-      config, _command, context, ...args
+      config, _command, context
     ) {
       let { fullName, options } = _command
 
-      if (compareNames(fullName, command)) {
+      if (compareNames(fullName, command, true)) {
         options = optionsToObject(options)
-        context = yield handler(options, context, ...args)
+        context = yield handler(options, context, fullName)
       }
 
-      return yield next(config, _command, context, ...args)
+      return yield next(config, _command, context)
     })
   }
 
