@@ -1,10 +1,10 @@
-const { next, hook } = require('appache/effects')
+const { next, preHook } = require('appache/effects')
 const extendClasses = require('./extendClasses')
 const buildConfig = require('./buildConfig')
 
 
 module.exports = function* apiFluentPlugin(lifecycle) {
-  yield hook('init', function* (schema, api) {
+  yield preHook('init', (schema, api) => {
     if (api) {
       // eslint-disable-next-line
       console.warn(
@@ -19,9 +19,9 @@ module.exports = function* apiFluentPlugin(lifecycle) {
       let command = new Command(name, description)
       command.lifecycle = lifecycle
 
-      lifecycle.hookStart('config', function* (schema) {
+      lifecycle.preHookStart('config', (schema) => {
         let config = buildConfig(command, true)
-        return yield next(schema, config)
+        return [schema, config]
       })
 
       return command
@@ -43,6 +43,6 @@ module.exports = function* apiFluentPlugin(lifecycle) {
       return this
     }
 
-    return yield next(schema, createCommand)
+    return [schema, createCommand]
   })
 }
