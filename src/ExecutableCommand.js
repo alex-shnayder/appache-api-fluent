@@ -97,35 +97,6 @@ class ExecutableCommand extends Command {
       .toot('execute', request)
       .catch((err) => lifecycle.toot('error', err))
   }
-
-  start() {
-    let lifecycle = this.lifecycle
-
-    if (!lifecycle || this.parent) {
-      throw new Error('start() can only be used on the root command (the app)')
-    }
-
-    try {
-      return lifecycle.toot('start')
-    } catch (err) {
-      lifecycle.toot('error', err)
-    }
-  }
-
-  catch(handler) {
-    let lifecycle = this.lifecycle
-
-    if (!lifecycle || this.parent) {
-      throw new Error('catch() can only be used on the root command (the app)')
-    }
-
-    lifecycle.hook('error', function* (_, ...args) {
-      let result = yield handler(...args)
-      return result ? result : yield next(_, ...args)
-    })
-
-    return this
-  }
 }
 
 ExecutableCommand.Option = Option

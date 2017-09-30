@@ -14,7 +14,8 @@ module.exports = function* apiFluentPlugin(lifecycle) {
     }
 
     let Command = extendClasses(schema)
-    let createCommand = (name, description) => {
+
+    function createCommand(name, description) {
       let command = new Command(name, description)
       command.lifecycle = lifecycle
 
@@ -24,6 +25,22 @@ module.exports = function* apiFluentPlugin(lifecycle) {
       })
 
       return command
+    }
+
+    createCommand.start = () => {
+      try {
+        return lifecycle.toot('start')
+      } catch (err) {
+        lifecycle.toot('error', err)
+      }
+    }
+
+    createCommand.catch = (handler) => {
+      lifecycle.hook('error', function* (_, ...args) {
+        let result = yield handler(...args)
+        return result ? result : yield next(_, ...args)
+      })
+      return this
     }
 
     return yield next(schema, createCommand)
