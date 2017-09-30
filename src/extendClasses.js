@@ -6,18 +6,37 @@ const PROPS_TO_SKIP = ['id', 'name', 'aliases', 'commands', 'options']
 
 
 function createMethod(name, prop) {
-  let isBoolean = (
-    prop.type === 'boolean' || typeof prop.typeof === 'boolean' ||
-    (Array.isArray(prop.type) && prop.type.includes('boolean')) ||
-    (Array.isArray(prop.typeof) && prop.typeof.includes('boolean'))
+  let isArray = (
+    prop.type === 'array' ||
+    (Array.isArray(prop.type) && prop.type.includes('array'))
   )
 
-  return function(arg) {
-    if (isBoolean && typeof arg === 'undefined') {
-      arg = true
+  if (isArray) {
+    return function arrayProperty(...value) {
+      value = (!value.length) ? value : undefined
+      this.config[name] = value
+      return this
     }
+  }
 
-    this.config[name] = arg
+  let isBoolean = (
+    !isArray && (
+      prop.type === 'boolean' || typeof prop.typeof === 'boolean' ||
+      (Array.isArray(prop.type) && prop.type.includes('boolean')) ||
+      (Array.isArray(prop.typeof) && prop.typeof.includes('boolean'))
+    )
+  )
+
+  if (isBoolean) {
+    return function booleanProperty(value) {
+      value = (arguments.length === 0) ? true : value
+      this.config[name] = value
+      return this
+    }
+  }
+
+  return function genericProperty(value) {
+    this.config[name] = value
     return this
   }
 }
