@@ -2,7 +2,7 @@ const { preHook } = require('appache/effects')
 const createApiFunction = require('./createApiFunction')
 
 
-module.exports = function* apiFluentPlugin(lifecycle) {
+module.exports = function* apiFluentPlugin() {
   yield preHook('init', (schema, api) => {
     if (api) {
       // eslint-disable-next-line
@@ -12,7 +12,7 @@ module.exports = function* apiFluentPlugin(lifecycle) {
       )
     }
 
-    api = createApiFunction(lifecycle, schema)
+    api = createApiFunction(this, schema)
     return [schema, api]
   })
 }
