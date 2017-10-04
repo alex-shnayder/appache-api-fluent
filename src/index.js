@@ -16,3 +16,5 @@ module.exports = function* apiFluentPlugin() {
     return [schema, api]
   })
 }
+
+module.exports.tags = ['api']
