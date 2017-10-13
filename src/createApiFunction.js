@@ -11,7 +11,7 @@ function createApiFunction(lifecycle, schema) {
     command.lifecycle = lifecycle
 
     lifecycle.preHookStart('config', (schema) => {
-      let config = buildConfig(command, true)
+      let config = buildConfig(command)
       return [schema, config]
     })
 

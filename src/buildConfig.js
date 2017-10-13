@@ -7,7 +7,7 @@ function concatArrays(arrayA, arrayB) {
 }
 
 module.exports = function buildConfig(
-  command, isDefault, inheritedSettings, inheritedOptions
+  command, inheritedSettings, inheritedOptions
 ) {
   let config = Object.assign({}, command.config)
   let commands = [config]
@@ -16,14 +16,13 @@ module.exports = function buildConfig(
   let inheritableSettings = concatArrays(inheritedSettings, sharedSettings)
   let inheritableOptions = concatArrays(inheritedOptions, sharedOptions)
 
-  config.default = Boolean(isDefault)
   config.inheritableSettings = inheritableSettings
   config.inheritableOptions = inheritableOptions
 
   if (command.commands) {
     command.commands.forEach((subcommand) => {
       let subcommandConfig = buildConfig(
-        subcommand, false, inheritableSettings, inheritableOptions
+        subcommand, inheritableSettings, inheritableOptions
       )
       commands = commands.concat(subcommandConfig.commands)
       options = options.concat(subcommandConfig.options)
