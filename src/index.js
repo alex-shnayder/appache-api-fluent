@@ -3,7 +3,10 @@ const createApiFunction = require('./createApiFunction')
 
 
 module.exports = function* apiFluentPlugin() {
-  yield preHook('init', (schema, api) => {
+  yield preHook({
+    event: 'init',
+    tags: ['api'],
+  }, (schema, api) => {
     if (api) {
       // eslint-disable-next-line
       console.warn(
