@@ -2,7 +2,7 @@ const { preHook } = require('appache/effects')
 const createApiFunction = require('./createApiFunction')
 
 
-module.exports = function* apiFluentPlugin() {
+module.exports = function* apiFluent() {
   yield preHook({
     event: 'init',
     tags: ['api'],
