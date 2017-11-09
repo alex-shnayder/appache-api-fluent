@@ -17,6 +17,9 @@
     ]
   },
   "main": "src/index.js",
+  "files": [
+    "src"
+  ],
   "devDependencies": {
     "eslint": "^3.19.0",
     "eslint-plugin-import": "^2.2.0",
