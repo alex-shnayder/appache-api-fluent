@@ -8,8 +8,7 @@
   "bugs": "https://github.com/alex-shnayder/appache-api-fluent/issues",
   "license": "ISC",
   "scripts": {
-    "precommit": "lint-staged",
-    "test": "mocha src/**/tests/*.js"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.js": [
@@ -22,10 +21,9 @@
     "eslint": "^3.19.0",
     "eslint-plugin-import": "^2.2.0",
     "husky": "^0.13.3",
-    "lint-staged": "^3.4.0",
-    "mocha": "^3.5.0"
+    "lint-staged": "^3.4.0"
   },
   "peerDependencies": {
-    "appache": "^0.5.0"
+    "appache": ">=0.6.0 <1.0.0"
   }
 }
