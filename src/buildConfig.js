@@ -12,10 +12,10 @@ module.exports = function buildConfig(
   let config = Object.assign({}, command.config)
   let commands = [config]
   let options = command.options.map((option) => option.config)
-  let { sharedSettings, sharedOptions } = command
-  let inheritableSettings = concatArrays(inheritedSettings, sharedSettings)
-  let inheritableOptions = concatArrays(inheritedOptions, sharedOptions)
+  let { inheritableSettings, inheritableOptions } = command
 
+  inheritableSettings = concatArrays(inheritedSettings, inheritableSettings)
+  inheritableOptions = concatArrays(inheritedOptions, inheritableOptions)
   config.inheritableSettings = inheritableSettings
   config.inheritableOptions = inheritableOptions
 

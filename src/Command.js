@@ -26,19 +26,19 @@ class Command {
     this.parent = parent
     this.commands = []
     this.options = []
-    this.sharedSettings = []
-    this.sharedOptions = []
+    this.inheritableSettings = []
+    this.inheritableOptions = []
 
     if (!parent) {
       let inheritableSettings = this.constructor.inheritableSettings
       let inheritableOptions = this.constructor.inheritableOptions
 
       if (inheritableSettings && inheritableSettings.length) {
-        this.sharedSettings = inheritableSettings.slice()
+        this.inheritableSettings = inheritableSettings.slice()
       }
 
       if (inheritableOptions && inheritableOptions.length) {
-        this.sharedOptions = inheritableOptions.slice()
+        this.inheritableOptions = inheritableOptions.slice()
       }
     }
 
@@ -56,8 +56,9 @@ class Command {
     return this
   }
 
-  share(...settings) {
-    this.sharedSettings.push(...settings)
+  // TODO: rename (there MUST be a better name)
+  makeSettingsInheritable(...settings) {
+    this.inheritableSettings.push(...settings)
     return this
   }
 

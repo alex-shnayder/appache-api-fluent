@@ -53,8 +53,8 @@ class Option {
     return this
   }
 
-  shared() {
-    this.parent.sharedOptions.push(this.config.id)
+  inheritable() {
+    this.parent.inheritableOptions.push(this.config.id)
     return this
   }
 
