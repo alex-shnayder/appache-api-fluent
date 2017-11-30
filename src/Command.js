@@ -81,6 +81,15 @@ class Command {
     return option
   }
 
+  default() {
+    if (!this.parent) {
+      throw new Error('A root command cannot be default')
+    }
+
+    this.parent.config.defaultCommand = this.config.name
+    return this
+  }
+
   end() {
     return this.parent
   }
