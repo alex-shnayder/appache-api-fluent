@@ -18,7 +18,7 @@ class ExecutableCommand extends Command {
     return result
   }
 
-  _tapHandle(event, command, handler) {
+  _tapHandle(type, command, handler) {
     if (!handler) {
       handler = command
       command = this.getFullName()
@@ -28,11 +28,11 @@ class ExecutableCommand extends Command {
       throw new Error('A command name must be a stirng')
     }
 
-    if (event === true) {
+    if (type === true) {
       this._getLifecycle().tapAndHandle(command, handler)
-    } else if (event === 'tap') {
+    } else if (type === 'tap') {
       this._getLifecycle().tap(command, handler)
-    } else if (event === 'handle') {
+    } else if (type === 'handle') {
       this._getLifecycle().handle(command, handler)
     }
 

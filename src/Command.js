@@ -30,8 +30,7 @@ class Command {
     this.inheritableOptions = []
 
     if (!parent) {
-      let inheritableSettings = this.constructor.inheritableSettings
-      let inheritableOptions = this.constructor.inheritableOptions
+      let { inheritableSettings, inheritableOptions } = this.constructor
 
       if (inheritableSettings && inheritableSettings.length) {
         this.inheritableSettings = inheritableSettings.slice()
