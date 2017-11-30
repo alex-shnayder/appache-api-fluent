@@ -13,7 +13,7 @@ function createMethod(name, prop) {
 
   if (isArray) {
     return function arrayProperty(...value) {
-      value = (!value.length) ? value : undefined
+      value = value.length ? value : undefined
       this.config[name] = value
       return this
     }
