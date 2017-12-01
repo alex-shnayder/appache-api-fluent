@@ -83,7 +83,10 @@ class Command {
 
   default() {
     if (!this.parent) {
-      throw new Error('A root command cannot be default')
+      throw new Error(
+        'Don\'t use default() on the root command. The fluent API supports ' +
+        'only one root command, and it is marked as default automatically'
+      )
     }
 
     this.parent.config.defaultCommand = this.config.name

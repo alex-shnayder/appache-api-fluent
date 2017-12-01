@@ -15,6 +15,7 @@ function createApiFunction(lifecycle, schema) {
       tags: ['createCommandConfig', 'createOptionConfig'],
     }, (schema) => {
       let config = buildConfig(command)
+      config.defaultCommand = command.config.name
       return [schema, config]
     })
 
