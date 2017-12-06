@@ -4,7 +4,7 @@ const createApiFunction = require('./createApiFunction')
 
 module.exports = function* apiFluent() {
   yield preHook({
-    event: 'init',
+    event: 'initialize',
     tags: ['api'],
   }, (schema, api) => {
     if (api) {
