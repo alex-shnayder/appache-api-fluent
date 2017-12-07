@@ -1,44 +1,39 @@
-const { next } = require('appache/effects')
+const { mergeConfigs } = require('appache/common')
+const createRootCommandClass = require('./createRootCommandClass')
 const extendClasses = require('./extendClasses')
 const buildConfig = require('./buildConfig')
 
 
-function createApiFunction(lifecycle, schema) {
+module.exports = function createApiFunction(lifecycle, schema) {
   let Command = extendClasses(schema)
+  let RootCommand = createRootCommandClass(Command)
+  let rootCommands = []
 
-  function createCommand(name, description) {
-    let command = new Command(name, description)
-    command.lifecycle = lifecycle
-
-    lifecycle.preHookStart({
-      event: 'configure',
-      tags: ['createCommandConfig', 'createOptionConfig'],
-    }, (schema) => {
-      let config = buildConfig(command)
-      config.defaultCommand = command.config.name
-      return [schema, config]
-    })
-
+  function createRootCommand(name, description) {
+    let command = new RootCommand(lifecycle, name, description)
+    rootCommands.push(command)
     return command
   }
 
-  createCommand.start = () => {
-    try {
-      return lifecycle.toot('start')
-    } catch (err) {
-      lifecycle.toot('error', err)
-    }
-  }
+  lifecycle.preHookStart({
+    event: 'configure',
+    tags: ['modifyConfig', 'createCommandConfig', 'createOptionConfig'],
+  }, (schema, config = {}) => {
+    rootCommands.forEach((command) => {
+      let commandConfig = buildConfig(command)
+      config = mergeConfigs(config, commandConfig)
 
-  createCommand.catch = (handler) => {
-    lifecycle.hook('error', function* (_, ...args) {
-      let result = yield handler(...args)
-      return result ? result : yield next(_, ...args)
+      if (command.config.default) {
+        config.defaultCommand = command.config.name
+      }
     })
-    return this
-  }
 
-  return createCommand
+    if (!config.defaultCommand && rootCommands.length === 1) {
+      config.defaultCommand = rootCommands[0].config.name
+    }
+
+    return [schema, config]
+  })
+
+  return createRootCommand
 }
-
-module.exports = createApiFunction

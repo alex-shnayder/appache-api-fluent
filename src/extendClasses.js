@@ -65,6 +65,7 @@ module.exports = function extendClasses(schema) {
   let optionSchema = schema.definitions.option
 
   let Command = extendClass(ExecutableCommand, commandSchema)
+  Command.Command = Command
   Command.Option = extendClass(Option, optionSchema)
 
   let commandProps = commandSchema.properties

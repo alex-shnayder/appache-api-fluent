@@ -1,81 +1,68 @@
 const Command = require('./Command')
-const Option = require('./Option')
 
 
 class ExecutableCommand extends Command {
-  _getLifecycle() {
-    return this.lifecycle || (this.parent && this.parent._getLifecycle())
+  constructor(...args) {
+    super(...args)
+    this.rootCommand = this._getRootCommand()
   }
 
-  getFullName(subcommand) {
-    let result = this.parent ? this.parent.getFullName() : []
-    result.push(this.config.name)
-
-    if (subcommand) {
-      result.push(...subcommand.split(' '))
+  _getRootCommand() {
+    if (this.parent) {
+      return this.parent._getRootCommand()
     }
 
-    return result
+    return this
   }
 
-  _tapHandle(type, command, handler) {
-    if (!handler) {
-      handler = command
-      command = this.getFullName()
-    } else if (typeof command === 'string') {
-      command = this.getFullName(command)
-    } else {
-      throw new Error('A command name must be a stirng')
+  _tapHandle(type, handler) {
+    if (typeof handler !== 'function') {
+      throw new Error('A handler must be a function')
     }
 
     if (type === true) {
-      this._getLifecycle().tapAndHandle(command, handler)
+      this.rootCommand.lifecycle.tapAndHandle(this.config.id, handler)
     } else if (type === 'tap') {
-      this._getLifecycle().tap(command, handler)
+      this.rootCommand.lifecycle.tap(this.config.id, handler)
     } else if (type === 'handle') {
-      this._getLifecycle().handle(command, handler)
+      this.rootCommand.lifecycle.handle(this.config.id, handler)
     }
 
     return this
   }
 
-  tap(command, handler) {
-    this._tapHandle('tap', command, handler)
-    return this
+  tap(handler) {
+    return this._tapHandle('tap', handler)
   }
 
-  handle(command, handler) {
-    this._tapHandle('handle', command, handler)
-    return this
+  handle(handler) {
+    return this._tapHandle('handle', handler)
   }
 
-  tapAndHandle(command, handler) {
-    this._tapHandle(true, command, handler)
-    return this
+  tapAndHandle(handler) {
+    return this._tapHandle(true, handler)
   }
 
   execute(command, options) {
-    let request
+    let batch
 
     if (Array.isArray(command)) {
-      request = command
+      batch = command
     } else {
       if (arguments.length === 1 && typeof command !== 'string') {
         options = command
         command = null
       }
 
-      let fullName = this.getFullName(command)
-      request = [{ fullName, options }]
+      batch = [{ name: this.config.name, options }]
     }
 
-    let lifecycle = this._getLifecycle()
+    let lifecycle = this.rootCommand.lifecycle
     return lifecycle
-      .toot('execute', request)
-      .catch((err) => lifecycle.toot('error', err))
+      .toot('execute', batch)
+      .catch((err) => lifecycle.error(err))
   }
 }
 
-ExecutableCommand.Option = Option
 
 module.exports = ExecutableCommand

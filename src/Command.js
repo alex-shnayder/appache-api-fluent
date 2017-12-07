@@ -68,7 +68,7 @@ class Command {
   }
 
   command(name, description) {
-    let command = new this.constructor(name, description, this)
+    let command = new this.constructor.Command(name, description, this)
     this.commands.push(command)
     this.config.commands.push(command.config.id)
     return command
@@ -82,14 +82,12 @@ class Command {
   }
 
   default() {
-    if (!this.parent) {
-      throw new Error(
-        'Don\'t use default() on the root command. The fluent API supports ' +
-        'only one root command, and it is marked as default automatically'
-      )
+    if (this.parent) {
+      this.parent.config.defaultCommand = this.config.name
+    } else {
+      this.config.default = true
     }
 
-    this.parent.config.defaultCommand = this.config.name
     return this
   }
 
