@@ -2,7 +2,9 @@ const ExecutableCommand = require('./ExecutableCommand')
 const Option = require('./Option')
 
 
-const PROPS_TO_SKIP = ['id', 'name', 'aliases', 'commands', 'options']
+const PROPS_TO_SKIP = [
+  'id', 'name', 'aliases', 'commands', 'options', 'sharedOptions',
+]
 
 
 function createMethod(name, prop) {

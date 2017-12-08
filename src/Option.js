@@ -58,6 +58,18 @@ class Option {
     return this
   }
 
+  shared() {
+    let parentConfig = this.parent.config
+
+    if (parentConfig.sharedOptions === true) {
+      return this
+    }
+
+    parentConfig.sharedOptions = parentConfig.sharedOptions || []
+    parentConfig.sharedOptions.push(this.config.name)
+    return this
+  }
+
   command(...args) {
     return this.parent.command(...args)
   }

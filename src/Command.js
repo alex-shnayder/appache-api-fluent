@@ -61,6 +61,16 @@ class Command {
     return this
   }
 
+  sharedOptions(...args) {
+    if (args.length === 1 && args[0] === true) {
+      this.config.sharedOptions = true
+    } else {
+      this.config.sharedOptions = args
+    }
+
+    return this
+  }
+
   restrict(value) {
     this.config.restrictCommands = value
     this.config.restrictOptions = value
