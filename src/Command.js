@@ -71,12 +71,6 @@ class Command {
     return this
   }
 
-  restrict(value) {
-    this.config.restrictCommands = value
-    this.config.restrictOptions = value
-    return this
-  }
-
   command(name, description) {
     let command = new this.constructor.Command(name, description, this)
     this.commands.push(command)
