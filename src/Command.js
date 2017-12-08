@@ -83,7 +83,7 @@ class Command {
 
   default() {
     if (this.parent) {
-      this.parent.config.defaultCommand = this.config.name
+      this.parent.config.defaultCommand = this.config.id
     } else {
       this.config.default = true
     }

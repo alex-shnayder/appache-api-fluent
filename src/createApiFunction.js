@@ -24,12 +24,12 @@ module.exports = function createApiFunction(lifecycle, schema) {
       config = mergeConfigs(config, commandConfig)
 
       if (command.config.default) {
-        config.defaultCommand = command.config.name
+        config.defaultCommand = command.config.id
       }
     })
 
     if (!config.defaultCommand && rootCommands.length === 1) {
-      config.defaultCommand = rootCommands[0].config.name
+      config.defaultCommand = rootCommands[0].config.id
     }
 
     return [schema, config]
