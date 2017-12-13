@@ -2,42 +2,54 @@ const ExecutableCommand = require('./ExecutableCommand')
 const Option = require('./Option')
 
 
-const PROPS_TO_SKIP = [
-  'id', 'name', 'aliases', 'commands', 'options', 'sharedOptions',
-]
+const PROPS_TO_SKIP = ['id', 'name', 'aliases', 'commands', 'options']
 
 
-function createMethod(name, prop) {
-  let isArray = (
-    prop.type === 'array' ||
-    (Array.isArray(prop.type) && prop.type.includes('array'))
-  )
-
-  if (isArray) {
-    return function arrayProperty(...value) {
-      value = value.length ? value : undefined
-      this.config[name] = value
-      return this
-    }
+function getAllowedPropTypes(prop) {
+  if (prop.type) {
+    return [].concat(prop.type)
+  } else if (prop.typeof) {
+    return [].concat(prop.typeof)
+  } else if (prop.oneOf) {
+    return prop.oneOf.reduce((types, prop) => {
+      return types.concat(getAllowedPropTypes(prop))
+    }, [])
   }
 
-  let isBoolean = (
-    !isArray && (
-      prop.type === 'boolean' || typeof prop.typeof === 'boolean' ||
-      (Array.isArray(prop.type) && prop.type.includes('boolean')) ||
-      (Array.isArray(prop.typeof) && prop.typeof.includes('boolean'))
+  return []
+}
+
+function methodArgsToValue(name, allowedTypes, args) {
+  if (!allowedTypes.length) {
+    return args[0]
+  }
+
+  let value = args.length ? args[0] : true
+  let valueType
+
+  if (value === null) {
+    valueType = 'null'
+  } else if (Array.isArray(value)) {
+    valueType = 'array'
+  } else {
+    valueType = typeof value
+  }
+
+  if (valueType !== 'undefined' && !allowedTypes.includes(valueType)) {
+    throw new Error(
+      `The value of "${name}" must be of one ` +
+      `of the following types: ${allowedTypes.join(', ')}`
     )
-  )
-
-  if (isBoolean) {
-    return function booleanProperty(value) {
-      value = (arguments.length === 0) ? true : value
-      this.config[name] = value
-      return this
-    }
   }
 
-  return function genericProperty(value) {
+  return value
+}
+
+function createMethodForProperty(name, prop) {
+  let allowedTypes = getAllowedPropTypes(prop)
+
+  return function propertyMethod(...args) {
+    let value = methodArgsToValue(name, allowedTypes, args)
     this.config[name] = value
     return this
   }
@@ -56,7 +68,7 @@ function extendClass(Class, schema) {
       throw new Error(`Property "${key}" is conflicting with the API plugin`)
     }
 
-    ExtendedClass.prototype[key] = createMethod(key, props[key])
+    ExtendedClass.prototype[key] = createMethodForProperty(key, props[key])
   })
 
   return ExtendedClass

@@ -61,16 +61,6 @@ class Command {
     return this
   }
 
-  sharedOptions(...args) {
-    if (args.length === 1 && args[0] === true) {
-      this.config.sharedOptions = true
-    } else {
-      this.config.sharedOptions = args
-    }
-
-    return this
-  }
-
   command(name, description) {
     let command = new this.constructor.Command(name, description, this)
     this.commands.push(command)
