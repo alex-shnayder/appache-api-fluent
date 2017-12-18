@@ -58,15 +58,31 @@ class Option {
     return this
   }
 
-  shared() {
+  shared(value = true) {
     let parentConfig = this.parent.config
+    let { sharedOptions } = parentConfig
 
-    if (parentConfig.sharedOptions === true) {
+    if (sharedOptions === true) {
+      if (value === false) {
+        throw new Error(
+          `Command "${parentConfig.name}" has all its options shared, ` +
+          `and option "${this.config.name}" cannot be unshared individually`
+        )
+      }
+
       return this
     }
 
-    parentConfig.sharedOptions = parentConfig.sharedOptions || []
-    parentConfig.sharedOptions.push(this.config.name)
+    parentConfig.sharedOptions = sharedOptions || []
+
+    if (value) {
+      sharedOptions.push(this.config.name)
+    } else {
+      parentConfig.sharedOptions = sharedOptions.filter((name) => {
+        return name !== this.config.name
+      })
+    }
+
     return this
   }
 
