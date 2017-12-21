@@ -21,25 +21,12 @@ class Command {
       id: parent ? `${parent.config.id}.${name}` : name,
       commands: [],
       options: [],
+      extends: parent ? parent.config.id : undefined,
     }
 
     this.parent = parent
     this.commands = []
     this.options = []
-    this.inheritableSettings = []
-    this.inheritableOptions = []
-
-    if (!parent) {
-      let { inheritableSettings, inheritableOptions } = this.constructor
-
-      if (inheritableSettings && inheritableSettings.length) {
-        this.inheritableSettings = inheritableSettings.slice()
-      }
-
-      if (inheritableOptions && inheritableOptions.length) {
-        this.inheritableOptions = inheritableOptions.slice()
-      }
-    }
 
     if (aliases.length) {
       this.aliases(...aliases)
@@ -52,12 +39,6 @@ class Command {
 
   aliases(...aliases) {
     this.config.aliases = aliases
-    return this
-  }
-
-  // TODO: rename (there MUST be a better name)
-  makeSettingsInheritable(...settings) {
-    this.inheritableSettings.push(...settings)
     return this
   }
 

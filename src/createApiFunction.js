@@ -1,7 +1,23 @@
 const { mergeConfigs } = require('appache/common')
 const createRootCommandClass = require('./createRootCommandClass')
 const extendClasses = require('./extendClasses')
-const buildConfig = require('./buildConfig')
+
+
+function buildConfig(command) {
+  let commandConfig = Object.assign({}, command.config)
+  let commands = [commandConfig]
+  let options = command.options.map((option) => {
+    return Object.assign({}, option.config)
+  })
+
+  command.commands.forEach((subcommand) => {
+    let subcommandConfig = buildConfig(subcommand)
+    commands = commands.concat(subcommandConfig.commands)
+    options = options.concat(subcommandConfig.options)
+  })
+
+  return { commands, options }
+}
 
 
 module.exports = function createApiFunction(lifecycle, schema) {

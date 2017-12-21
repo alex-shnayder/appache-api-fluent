@@ -53,11 +53,6 @@ class Option {
     return this
   }
 
-  inheritable() {
-    this.parent.inheritableOptions.push(this.config.id)
-    return this
-  }
-
   shared(value = true) {
     let parentConfig = this.parent.config
     let { sharedOptions } = parentConfig
