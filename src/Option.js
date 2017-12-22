@@ -48,7 +48,8 @@ class Option {
     }
   }
 
-  aliases(...aliases) {
+  aliases(aliases) {
+    aliases = Array.isArray(aliases) ? aliases : [aliases]
     this.config.aliases = aliases.map((a) => normalizeName(a))
     return this
   }

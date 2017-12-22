@@ -37,8 +37,8 @@ class Command {
     }
   }
 
-  aliases(...aliases) {
-    this.config.aliases = aliases
+  aliases(aliases) {
+    this.config.aliases = Array.isArray(aliases) ? aliases : [aliases]
     return this
   }
 
