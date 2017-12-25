@@ -56,16 +56,6 @@ class Command {
     return option
   }
 
-  default() {
-    if (this.parent) {
-      this.parent.config.defaultCommand = this.config.id
-    } else {
-      this.config.default = true
-    }
-
-    return this
-  }
-
   end() {
     return this.parent
   }

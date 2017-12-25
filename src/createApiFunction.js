@@ -3,7 +3,7 @@ const createRootCommandClass = require('./createRootCommandClass')
 const extendClasses = require('./extendClasses')
 
 
-function buildConfig(command) {
+function buildConfigForCommand(command) {
   let commandConfig = Object.assign({}, command.config)
   let commands = [commandConfig]
   let options = command.options.map((option) => {
@@ -11,12 +11,21 @@ function buildConfig(command) {
   })
 
   command.commands.forEach((subcommand) => {
-    let subcommandConfig = buildConfig(subcommand)
+    let subcommandConfig = buildConfigForCommand(subcommand)
     commands = commands.concat(subcommandConfig.commands)
     options = options.concat(subcommandConfig.options)
   })
 
   return { commands, options }
+}
+
+function buildConfig(config, commands) {
+  config = commands.reduce((config, command) => {
+    let commandConfig = buildConfigForCommand(command)
+    return mergeConfigs(config, commandConfig)
+  }, config)
+  config.commands[0].default = true
+  return config
 }
 
 
@@ -35,19 +44,7 @@ module.exports = function createApiFunction(lifecycle, schema) {
     event: 'configure',
     tags: ['modifyConfig', 'createCommandConfig', 'createOptionConfig'],
   }, (schema, config = {}) => {
-    rootCommands.forEach((command) => {
-      let commandConfig = buildConfig(command)
-      config = mergeConfigs(config, commandConfig)
-
-      if (command.config.default) {
-        config.defaultCommand = command.config.id
-      }
-    })
-
-    if (!config.defaultCommand && rootCommands.length === 1) {
-      config.defaultCommand = rootCommands[0].config.id
-    }
-
+    config = buildConfig(config, rootCommands)
     return [schema, config]
   })
 
