@@ -6,7 +6,11 @@ const PROPS_TO_SKIP = ['id', 'name', 'aliases', 'commands', 'options']
 
 
 function getAllowedPropTypes(prop) {
-  if (prop.type) {
+  if (prop.$ref === '#/definitions/command/properties/id') {
+    return ['commandId', 'string']
+  } else if (prop.$ref === '#/definitions/option/properties/id') {
+    return ['optionId', 'string']
+  } else if (prop.type) {
     return [].concat(prop.type)
   } else if (prop.typeof) {
     return [].concat(prop.typeof)
@@ -31,6 +35,12 @@ function methodArgsToValue(name, allowedTypes, args) {
     valueType = 'null'
   } else if (Array.isArray(value)) {
     valueType = 'array'
+  } else if (value instanceof ExecutableCommand) {
+    valueType = 'commandId'
+    value = value.config.id
+  } else if (value instanceof Option) {
+    valueType = 'optionId'
+    value = value.config.id
   } else {
     valueType = typeof value
   }
