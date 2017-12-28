@@ -3,9 +3,9 @@
   "version": "0.4.0",
   "description": "",
   "author": "Alex Shnayder <alex@shnayder.pro>",
-  "repository": "alex-shnayder/appache-api-fluent",
-  "homepage": "https://github.com/alex-shnayder/appache-api-fluent#readme",
-  "bugs": "https://github.com/alex-shnayder/appache-api-fluent/issues",
+  "repository": "appache/appache-api-fluent",
+  "homepage": "https://github.com/appache/appache-api-fluent#readme",
+  "bugs": "https://github.com/appache/appache-api-fluent/issues",
   "license": "ISC",
   "scripts": {
     "precommit": "lint-staged"
