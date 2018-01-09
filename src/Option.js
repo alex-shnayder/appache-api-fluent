@@ -70,6 +70,10 @@ class Option {
     return this.parent.tap(...args)
   }
 
+  tapAndHandle(...args) {
+    return this.parent.tapAndHandle(...args)
+  }
+
   start(...args) {
     return this.parent.start(...args)
   }
