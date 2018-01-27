@@ -43,24 +43,18 @@ class ExecutableCommand extends Command {
     return this._tapHandle(true, handler)
   }
 
-  execute(command, options) {
-    let batch
-
-    if (Array.isArray(command)) {
-      batch = command
-    } else {
-      if (arguments.length === 1 && typeof command !== 'string') {
-        options = command
-        command = null
+  execute(batch) {
+    return new Promise((resolve) => {
+      if (!Array.isArray(batch)) {
+        batch = [{ name: this.config.name, options: batch }]
       }
 
-      batch = [{ name: this.config.name, options }]
-    }
-
-    let lifecycle = this.rootCommand.lifecycle
-    return lifecycle
-      .toot('execute', batch)
-      .catch((err) => lifecycle.error(err))
+      let lifecycle = this.rootCommand.lifecycle
+      let result = lifecycle
+        .toot('execute', batch)
+        .catch((err) => lifecycle.error(err))
+      resolve(result)
+    })
   }
 }
 
